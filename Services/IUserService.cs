@@ -5,10 +5,12 @@ namespace IndoorLocalization.Services
 {
     public interface IUserService
     {
-        Task<User?> GetByEmailAsync(string email);
         Task<User?> GetByIdAsync(long id);
-        Task UpdateTokenAsync(User user);
+        Task<User?> GetByEmailAsync(string email);
+        Task<User?> GetByUsernameAsync(string username);
         Task<User> RegisterAsync(RegisterRequestDto dto);
+        Task<LoginResponseDto?> LoginAsync(LoginRequestDto dto);
+        Task UpdateTokenAsync(User user);
 
     }
 }
