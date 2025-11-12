@@ -1,4 +1,4 @@
-﻿namespace IndoorLocalization.Entities
+﻿namespace IndoorLocalization.Models.Entities
 {
     public class Asset
     {
