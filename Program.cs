@@ -12,6 +12,7 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 builder.Services.AddSingleton<IUserRepository, MockUserRepository>();
+builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddSingleton<JwtService>();
 
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
