@@ -1,4 +1,5 @@
-﻿using IndoorLocalization.Models.Entities;
+﻿using IndoorLocalization.Models.DTOs;
+using IndoorLocalization.Models.Entities;
 
 namespace IndoorLocalization.Services
 {
@@ -7,5 +8,7 @@ namespace IndoorLocalization.Services
         Task<User?> GetByEmailAsync(string email);
         Task<User?> GetByIdAsync(long id);
         Task UpdateTokenAsync(User user);
+        Task<User> RegisterAsync(RegisterRequestDto dto);
+
     }
 }
