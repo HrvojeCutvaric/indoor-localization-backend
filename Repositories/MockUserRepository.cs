@@ -44,5 +44,24 @@ namespace IndoorLocalization.Repositories
             }
             return Task.CompletedTask;
         }
+
+        public Task AddAsync(User user)
+        {
+            user.Id = _users.Max(u => u.Id) + 1;
+            _users.Add(user);
+            return Task.CompletedTask;
+        }
+
+        public Task<bool> ExistsByEmailAsync(string email)
+        {
+            return Task.FromResult(_users.Any(u => u.Email.Equals(email, StringComparison.OrdinalIgnoreCase)));
+        }
+
+        public Task<bool> ExistsByUsernameAsync(string username)
+        {
+            return Task.FromResult(_users.Any(u => u.Username.Equals(username, StringComparison.OrdinalIgnoreCase)));
+        }
+
+
     }
 }
