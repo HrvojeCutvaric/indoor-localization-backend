@@ -1,10 +1,6 @@
 ﻿using IndoorLocalization.Models.DTOs;
-using IndoorLocalization.Models.Entities;
 using IndoorLocalization.Services;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using System.IdentityModel.Tokens.Jwt;
-using System.Security.Claims;
 
 namespace IndoorLocalization.Controllers
 {
@@ -13,12 +9,10 @@ namespace IndoorLocalization.Controllers
     public class AuthController : ControllerBase
     {
         private readonly IUserService _userService;
-        private readonly JwtService _jwtService;
 
-        public AuthController(IUserService userService, JwtService jwtService)
+        public AuthController(IUserService userService)
         {
             _userService = userService;
-            _jwtService = jwtService;
         }
 
         [HttpPost("register")]
@@ -27,18 +21,7 @@ namespace IndoorLocalization.Controllers
             try
             {
                 var user = await _userService.RegisterAsync(dto);
-                return StatusCode(StatusCodes.Status201Created, new
-                {
-                    message = "Registration successful",
-                    user = new
-                    {
-                        user.Id,
-                        user.Username,
-                        user.Email,
-                        user.FirstName,
-                        user.LastName
-                    }
-                });
+                return Created("", new { user.Id, user.Username, user.Email });
             }
             catch (ArgumentException ex)
             {
@@ -48,51 +31,23 @@ namespace IndoorLocalization.Controllers
             {
                 return Conflict(new { message = ex.Message });
             }
-            catch (Exception)
-            {
-                return StatusCode(500, new { message = "An error occurred during registration." });
-            }
         }
 
-        [HttpPost("refresh-token")]
-        public async Task<IActionResult> RefreshToken([FromBody] TokenRequestDto tokenRequest)
+        [HttpPost("login")]
+        public async Task<IActionResult> Login([FromBody] LoginRequestDto dto)
         {
-            if(tokenRequest is null || 
-               string.IsNullOrEmpty(tokenRequest.AccessToken) || 
-               string.IsNullOrEmpty(tokenRequest.RefreshToken))
+            try
             {
-                 return BadRequest("Invalid client request");
+                var result = await _userService.LoginAsync(dto);
+                if (result == null)
+                    return Unauthorized(new { message = "Invalid credentials" });
+
+                return Ok(result);
             }
-
-            var principal = _jwtService.GetPrincipalFromExpiredToken(tokenRequest.AccessToken);
-            if(principal is null) return BadRequest("Invalid access token or refresh token 1");
-
-            var userEmailClaim = principal.Claims.FirstOrDefault(c =>
-                c.Type.Equals("email", StringComparison.OrdinalIgnoreCase) ||
-                c.Type == ClaimTypes.Email
-                )?.Value;
-            if (string.IsNullOrEmpty(userEmailClaim)) return BadRequest("Invalid access token or refresh token 2");
-
-            var user = await _userService.GetByEmailAsync(userEmailClaim);
-            if(user is null || 
-               user.RefreshToken != tokenRequest.RefreshToken || 
-               user.RefreshTokenExpiryTime <= DateTime.UtcNow)
+            catch (ArgumentException ex)
             {
-                return BadRequest("Invalid access token or refresh token 3");
+                return BadRequest(new { message = ex.Message });
             }
-
-            var newAccessToken = _jwtService.CreateToken(user);
-            var newRefreshToken = _jwtService.RefreshToken();
-
-            user.RefreshToken = newRefreshToken;
-            user.RefreshTokenExpiryTime = DateTime.UtcNow.AddDays(7);
-            await _userService.UpdateTokenAsync(user);
-
-            return Ok(new TokenResponseDto
-            {
-                AccessToken = newAccessToken,
-                RefreshToken = newRefreshToken
-            });
         }
     }
 }
