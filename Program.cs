@@ -1,3 +1,4 @@
+using IndoorLocalization.Repositories;
 using IndoorLocalization.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 
@@ -10,6 +11,7 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
+builder.Services.AddSingleton<IUserRepository, MockUserRepository>();
 builder.Services.AddSingleton<JwtService>();
 
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)

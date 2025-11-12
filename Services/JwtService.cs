@@ -1,9 +1,9 @@
-﻿using IndoorLocalization.Entities;
-using Microsoft.IdentityModel.Tokens;
+﻿using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using System.Security.Claims;
 using Microsoft.IdentityModel.JsonWebTokens;
 using System.IdentityModel.Tokens.Jwt;
+using IndoorLocalization.Models.Entities;
 
 namespace IndoorLocalization.Services
 {
