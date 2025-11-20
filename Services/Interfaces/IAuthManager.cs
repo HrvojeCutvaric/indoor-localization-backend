@@ -7,5 +7,6 @@ namespace IndoorLocalization.Services.Interfaces
     {
         Task<LoginResponseDto?> LoginAsync(LoginRequestDto dto);
         Task<User> RegisterAsync(RegisterRequestDto dto);
+        Task<RefreshTokenResponseDto?> RefreshTokenAsync(RefreshTokenRequestDto dto);
     }
 }

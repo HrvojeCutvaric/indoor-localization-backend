@@ -5,10 +5,11 @@ using System.IdentityModel.Tokens.Jwt;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.Extensions.Configuration;
 using IndoorLocalization.Models.Entities;
+using IndoorLocalization.Security.Interfaces;
 
-namespace IndoorLocalization.Services
+namespace IndoorLocalization.Security
 {
-    public class JwtService
+    public class JwtService : IJwtService
     {
         private readonly IConfiguration _configuration;
 
@@ -44,7 +45,7 @@ namespace IndoorLocalization.Services
             return handler.WriteToken(token);
         }
 
-        public string RefreshToken()
+        public string GenerateRefreshToken()
         {
             var randomNumber = new byte[32];
             using (var rng = System.Security.Cryptography.RandomNumberGenerator.Create())

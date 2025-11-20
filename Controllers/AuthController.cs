@@ -52,5 +52,16 @@ namespace IndoorLocalization.Controllers
                 return BadRequest(new { message = ex.Message });
             }
         }
+
+        [HttpPost("refresh")]
+        [AllowAnonymous]
+        public async Task<IActionResult> Refresh([FromBody] RefreshTokenRequestDto dto)
+        {
+            var result = await _authManager.RefreshTokenAsync(dto);
+            if (result == null)
+                return Unauthorized(new { message = "Invalid refresh token" });
+
+            return Ok(result);
+        }
     }
 }

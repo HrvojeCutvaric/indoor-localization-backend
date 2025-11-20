@@ -1,8 +1,11 @@
 ﻿using IndoorLocalization.Models.DTOs;
 using IndoorLocalization.Models.Entities;
 using IndoorLocalization.Repositories.Interfaces;
+using IndoorLocalization.Security;
 using IndoorLocalization.Security.Interfaces;
 using IndoorLocalization.Services.Interfaces;
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text.RegularExpressions;
 
@@ -13,9 +16,9 @@ namespace IndoorLocalization.Services
         private readonly IUserRepository _userRepository;
         private readonly IPasswordHasher _passwordHasher;
         private readonly IUserService _userService;
-        private readonly JwtService _jwtService;
+        private readonly IJwtService _jwtService;
 
-        public AuthManager(IUserRepository userRepository, IPasswordHasher passwordHasher, IUserService userService,JwtService jwtService)
+        public AuthManager(IUserRepository userRepository, IPasswordHasher passwordHasher, IUserService userService, IJwtService jwtService)
         {
             _userRepository = userRepository;
             _passwordHasher = passwordHasher;
@@ -66,7 +69,7 @@ namespace IndoorLocalization.Services
             }
 
             var accessToken = _jwtService.CreateToken(user);
-            var refreshToken = _jwtService.RefreshToken();
+            var refreshToken = _jwtService.GenerateRefreshToken();
 
             user.RefreshToken = refreshToken;
             user.RefreshTokenExpiry = DateTime.UtcNow.AddDays(7);
@@ -79,6 +82,35 @@ namespace IndoorLocalization.Services
                 UserId = user.Id,
                 Username = user.Username,
                 Email = user.Email
+            };
+        }
+
+        public async Task<RefreshTokenResponseDto?> RefreshTokenAsync(RefreshTokenRequestDto dto)
+        {
+            var principal = _jwtService.GetPrincipalFromExpiredToken(dto.AccessToken);
+            if (principal == null) return null;
+
+            var userId = long.Parse(principal.FindFirstValue(ClaimTypes.NameIdentifier)
+                                    ?? principal.FindFirstValue(JwtRegisteredClaimNames.Sub)!);
+
+            var user = await _userRepository.GetByIdAsync(userId);
+            if (user == null) return null;
+
+            if (user.RefreshToken != dto.RefreshToken || user.RefreshTokenExpiry < DateTime.UtcNow)
+                return null;
+
+            var newAccessToken = _jwtService.CreateToken(user);
+            var newRefreshToken = _jwtService.GenerateRefreshToken();
+
+            user.RefreshToken = newRefreshToken;
+            user.RefreshTokenExpiry = DateTime.UtcNow.AddDays(7);
+
+            await _userService.UpdateTokenAsync(user);
+
+            return new RefreshTokenResponseDto
+            {
+                AccessToken = newAccessToken,
+                RefreshToken = newRefreshToken
             };
         }
 

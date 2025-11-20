@@ -4,18 +4,17 @@ using System.Security.Cryptography;
 using System.Text.RegularExpressions;
 using IndoorLocalization.Services.Interfaces;
 using IndoorLocalization.Repositories.Interfaces;
+using IndoorLocalization.Security;
 
 namespace IndoorLocalization.Services
 {
     public class UserService : IUserService
     {
         private readonly IUserRepository _userRepository;
-        private readonly JwtService _jwtService;
 
-        public UserService(IUserRepository userRepository, JwtService jwtService)
+        public UserService(IUserRepository userRepository)
         {
             _userRepository = userRepository;
-            _jwtService = jwtService;
         }
 
         public async Task<User?> GetByEmailAsync(string email)
