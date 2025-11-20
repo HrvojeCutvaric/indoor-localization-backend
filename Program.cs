@@ -1,6 +1,10 @@
 using IndoorLocalization.Data;
 using IndoorLocalization.Repositories;
+using IndoorLocalization.Repositories.Interfaces;
+using IndoorLocalization.Security;
+using IndoorLocalization.Security.Interfaces;
 using IndoorLocalization.Services;
+using IndoorLocalization.Services.Interfaces;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
@@ -17,13 +21,15 @@ var connectionString = builder.Configuration.GetConnectionString("DefaultConnect
 builder.Services.AddDbContext<IndoorLocalizationContext>(options =>
     options.UseNpgsql(connectionString));
 
-// JWT
-builder.Services.AddSingleton<JwtService>(sp => new JwtService(sp.GetRequiredService<IConfiguration>()));
+// Security
+builder.Services.AddScoped<IPasswordHasher, PasswordHasher>();
+builder.Services.AddScoped<JwtService>(sp => new JwtService(sp.GetRequiredService<IConfiguration>()));
 
 // Repositories
-builder.Services.AddSingleton<IUserRepository, MockUserRepository>();
+builder.Services.AddScoped<IUserRepository, UserRepository>();
 
 // Services
+builder.Services.AddScoped<IAuthManager, AuthManager>();
 builder.Services.AddScoped<IUserService, UserService>();
 
 // JWT Authentication

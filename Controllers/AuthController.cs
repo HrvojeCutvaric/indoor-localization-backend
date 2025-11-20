@@ -1,5 +1,6 @@
 ﻿using IndoorLocalization.Models.DTOs;
-using IndoorLocalization.Services;
+using IndoorLocalization.Services.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace IndoorLocalization.Controllers
@@ -8,19 +9,20 @@ namespace IndoorLocalization.Controllers
     [ApiController]
     public class AuthController : ControllerBase
     {
-        private readonly IUserService _userService;
+        private readonly IAuthManager _authManager;
 
-        public AuthController(IUserService userService)
+        public AuthController(IAuthManager authManager)
         {
-            _userService = userService;
+            _authManager = authManager;
         }
 
         [HttpPost("register")]
+        [AllowAnonymous]
         public async Task<IActionResult> Register([FromBody] RegisterRequestDto dto)
         {
             try
             {
-                var user = await _userService.RegisterAsync(dto);
+                var user = await _authManager.RegisterAsync(dto);
                 return Created("", new { user.Id, user.Username, user.Email });
             }
             catch (ArgumentException ex)
@@ -34,11 +36,12 @@ namespace IndoorLocalization.Controllers
         }
 
         [HttpPost("login")]
+        [AllowAnonymous]
         public async Task<IActionResult> Login([FromBody] LoginRequestDto dto)
         {
             try
             {
-                var result = await _userService.LoginAsync(dto);
+                var result = await _authManager.LoginAsync(dto);
                 if (result == null)
                     return Unauthorized(new { message = "Invalid credentials" });
 
