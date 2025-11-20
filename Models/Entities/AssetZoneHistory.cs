@@ -1,15 +1,17 @@
-﻿namespace IndoorLocalization.Models.Entities
-{
-    public class AssetZoneHistory
-    {
-        public long Id { get; set; }
-        public long AssetId { get; set; }
-        public long ZoneId { get; set; }
-        public DateTime EnterDateTime { get; set; }
-        public DateTime? ExitDateTime { get; set; }
-        public TimeSpan? RetentionTime { get; set; }
+﻿using System;
+using System.Collections.Generic;
 
-        public Asset? Asset { get; set; }
-        public Zone? Zone { get; set; }
-    }
+namespace IndoorLocalization.Models.Entities;
+
+public partial class AssetZoneHistory
+{
+    public long Id { get; set; }
+    public long? AssetId { get; set; }
+    public long? ZoneId { get; set; }
+    public DateTime EnterDateTime { get; set; }
+    public DateTime? ExitDateTime { get; set; }
+    public TimeSpan? RetentionTime { get; set; }
+
+    public virtual Asset? Asset { get; set; }
+    public virtual Zone? Zone { get; set; }
 }
