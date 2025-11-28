@@ -1,7 +1,7 @@
 ﻿using IndoorLocalization.Models.Entities;
 using System.Threading.Tasks;
 
-namespace IndoorLocalization.Repositories
+namespace IndoorLocalization.Repositories.Interfaces
 {
     public interface IUserRepository
     {
