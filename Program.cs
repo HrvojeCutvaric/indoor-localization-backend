@@ -55,10 +55,12 @@ builder.Services.AddScoped<IJwtService, JwtService>();
 
 // Repositories
 builder.Services.AddScoped<IUserRepository, UserRepository>();
+builder.Services.AddScoped<IFloorMapRepository, FloorMapRepository>();
 
 // Services
 builder.Services.AddScoped<IAuthManager, AuthManager>();
 builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.AddScoped<IFloorMapService, FloorMapService>();
 
 // JWT Authentication
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
