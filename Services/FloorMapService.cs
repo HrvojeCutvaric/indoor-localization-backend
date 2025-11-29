@@ -77,14 +77,21 @@ namespace IndoorLocalization.Services
             var existingMap = await _floorMapRepository.GetByIdAsync(id);
             if (existingMap == null) return null;
 
-            if (dto.Name != null && dto.Name != existingMap.Name)
+            if (!string.IsNullOrWhiteSpace(dto.Name))
             {
-                if (await _floorMapRepository.ExistsByNameAsync(dto.Name))
+                if (dto.Name != existingMap.Name &&
+                    await _floorMapRepository.ExistsByNameAsync(dto.Name))
+                {
                     throw new InvalidOperationException("Map name already exists.");
+                }
+
+                existingMap.Name = dto.Name;
             }
 
-            if (dto.Name != null) existingMap.Name = dto.Name;
-            if(dto.Image != null) existingMap.Image = dto.Image;
+            if (!string.IsNullOrWhiteSpace(dto.Image))
+            {
+                existingMap.Image = dto.Image;
+            }
 
             await _floorMapRepository.UpdateAsync(existingMap);
 
