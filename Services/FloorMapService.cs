@@ -27,8 +27,8 @@ namespace IndoorLocalization.Services
                 ImageUrl = fm.ImageUrl,
                 ImageWidthPx = fm.ImageWidthPx,
                 ImageHeightPx = fm.ImageHeightPx,
-                WidthM = fm.WidthM,
-                HeightM = fm.HeightM
+                WidthInMeters = fm.WidthInMeters,
+                HeightInMeters = fm.HeightInMeters
             }).ToList();
         }
 
@@ -45,8 +45,8 @@ namespace IndoorLocalization.Services
                 ImageUrl = floorMap.ImageUrl,
                 ImageWidthPx = floorMap.ImageWidthPx,
                 ImageHeightPx = floorMap.ImageHeightPx,
-                WidthM = floorMap.WidthM,
-                HeightM = floorMap.HeightM
+                WidthInMeters = floorMap.WidthInMeters,
+                HeightInMeters = floorMap.HeightInMeters
             };
         }
 
@@ -63,8 +63,8 @@ namespace IndoorLocalization.Services
                 ImageUrl = floorMap.ImageUrl,
                 ImageWidthPx = floorMap.ImageWidthPx,
                 ImageHeightPx = floorMap.ImageHeightPx,
-                WidthM = floorMap.WidthM,
-                HeightM = floorMap.HeightM
+                WidthInMeters = floorMap.WidthInMeters,
+                HeightInMeters = floorMap.HeightInMeters
             };
         }
 
@@ -84,8 +84,8 @@ namespace IndoorLocalization.Services
                 ImageUrl = imageUrl,
                 ImageWidthPx = dto.ImageWidthPx,
                 ImageHeightPx = dto.ImageHeightPx,
-                WidthM = dto.WidthM,
-                HeightM = dto.HeightM
+                WidthInMeters = dto.WidthInMeters,
+                HeightInMeters = dto.HeightInMeters
             };
 
             await _floorMapRepository.AddAsync(map);
@@ -97,8 +97,8 @@ namespace IndoorLocalization.Services
                 ImageUrl = map.ImageUrl,
                 ImageWidthPx = map.ImageWidthPx,
                 ImageHeightPx = map.ImageHeightPx,
-                WidthM = map.WidthM,
-                HeightM = map.HeightM
+                WidthInMeters = map.WidthInMeters,
+                HeightInMeters = map.HeightInMeters
             };
         }
 
@@ -135,11 +135,11 @@ namespace IndoorLocalization.Services
             if (dto.ImageHeightPx.HasValue)
                 existingMap.ImageHeightPx = dto.ImageHeightPx;
 
-            if (dto.WidthM.HasValue)
-                existingMap.WidthM = dto.WidthM.Value;
+            if (dto.WidthInMeters.HasValue)
+                existingMap.WidthInMeters = dto.WidthInMeters.Value;
 
-            if (dto.HeightM.HasValue)
-                existingMap.HeightM = dto.HeightM.Value;
+            if (dto.HeightInMeters.HasValue)
+                existingMap.HeightInMeters = dto.HeightInMeters.Value;
 
             await _floorMapRepository.UpdateAsync(existingMap);
 
@@ -150,8 +150,8 @@ namespace IndoorLocalization.Services
                 ImageUrl = existingMap.ImageUrl,
                 ImageWidthPx = existingMap.ImageWidthPx,
                 ImageHeightPx = existingMap.ImageHeightPx,
-                WidthM = existingMap.WidthM,
-                HeightM = existingMap.HeightM
+                WidthInMeters = existingMap.WidthInMeters,
+                HeightInMeters = existingMap.HeightInMeters
             };
         }
 

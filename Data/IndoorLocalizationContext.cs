@@ -127,10 +127,10 @@ public partial class IndoorLocalizationContext : DbContext
             entity.Property(e => e.ImageHeightPx)
                 .HasColumnName("image_height_px");
 
-            entity.Property(e => e.WidthM)
+            entity.Property(e => e.WidthInMeters)
                 .HasColumnName("width_m");
 
-            entity.Property(e => e.HeightM)
+            entity.Property(e => e.HeightInMeters)
                 .HasColumnName("height_m");
         });
 
