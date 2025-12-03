@@ -61,6 +61,7 @@ builder.Services.AddScoped<IFloorMapRepository, FloorMapRepository>();
 builder.Services.AddScoped<IAuthManager, AuthManager>();
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IFloorMapService, FloorMapService>();
+builder.Services.AddScoped<IImageService, ImageService>();
 
 // JWT Authentication
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
@@ -90,6 +91,7 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+app.UseStaticFiles();
 app.UseAuthentication();
 app.UseAuthorization();
 app.MapControllers();

@@ -36,7 +36,8 @@ namespace IndoorLocalization.Controllers
 
         // POST /api/floormaps
         [HttpPost]
-        public async Task<IActionResult> Create([FromBody] FloorMapCreateRequestDto dto)
+        [Consumes("multipart/form-data")]
+        public async Task<IActionResult> Create([FromForm] FloorMapCreateRequestDto dto)
         {
             try
             {
@@ -51,7 +52,8 @@ namespace IndoorLocalization.Controllers
 
         // PUT /api/floormaps/{id}
         [HttpPut("{id}")]
-        public async Task<IActionResult> Update(int id, [FromBody] FloorMapUpdateRequestDto dto)
+        [Consumes("multipart/form-data")]
+        public async Task<IActionResult> Update(int id, [FromForm] FloorMapUpdateRequestDto dto)
         {
             try
             {
@@ -76,6 +78,18 @@ namespace IndoorLocalization.Controllers
                 return NotFound(new { message = "Floor map not found" });
 
             return Ok(assets);
+        }
+
+        // DELETE /api/floormaps/{id}
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> Delete(long id)
+        {
+            var deleted = await _floorMapService.DeleteAsync(id);
+
+            if (!deleted)
+                return NotFound(new { message = "Floor map not found" });
+
+            return Ok(new { message = "Floor map deleted successfully" });
         }
     }
 }
