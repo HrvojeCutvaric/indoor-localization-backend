@@ -113,10 +113,25 @@ public partial class IndoorLocalizationContext : DbContext
             entity.ToTable("floormaps");
 
             entity.Property(e => e.Id).HasColumnName("id");
-            entity.Property(e => e.Image).HasColumnName("image");
+
             entity.Property(e => e.Name)
                 .HasMaxLength(200)
                 .HasColumnName("name");
+
+            entity.Property(e => e.ImageUrl)
+                .HasColumnName("image_url");
+
+            entity.Property(e => e.ImageWidthPx)
+                .HasColumnName("image_width_px");
+
+            entity.Property(e => e.ImageHeightPx)
+                .HasColumnName("image_height_px");
+
+            entity.Property(e => e.WidthM)
+                .HasColumnName("width_m");
+
+            entity.Property(e => e.HeightM)
+                .HasColumnName("height_m");
         });
 
         modelBuilder.Entity<User>(entity =>

@@ -21,7 +21,7 @@ namespace IndoorLocalization.Services
             {
                 Id = fm.Id,
                 Name = fm.Name,
-                Image = fm.Image
+                Image = fm.ImageUrl
             }).ToList();
         }
 
@@ -34,7 +34,7 @@ namespace IndoorLocalization.Services
             {
                 Id = floorMap.Id,
                 Name = floorMap.Name,
-                Image = floorMap.Image
+                Image = floorMap.ImageUrl
             };
         }
 
@@ -47,7 +47,7 @@ namespace IndoorLocalization.Services
             {
                 Id = floorMap.Id,
                 Name = floorMap.Name,
-                Image = floorMap.Image
+                Image = floorMap.ImageUrl
             };
         }
 
@@ -59,7 +59,7 @@ namespace IndoorLocalization.Services
             var map = new FloorMap
             {
                 Name = dto.Name,
-                Image = dto.Image
+                ImageUrl = dto.Image
             };
 
             await _floorMapRepository.AddAsync(map);
@@ -68,7 +68,7 @@ namespace IndoorLocalization.Services
             {
                 Id = map.Id,
                 Name = map.Name,
-                Image = map.Image
+                Image = map.ImageUrl
             };
         }
 
@@ -90,7 +90,7 @@ namespace IndoorLocalization.Services
 
             if (!string.IsNullOrWhiteSpace(dto.Image))
             {
-                existingMap.Image = dto.Image;
+                existingMap.ImageUrl = dto.Image;
             }
 
             await _floorMapRepository.UpdateAsync(existingMap);
@@ -99,7 +99,7 @@ namespace IndoorLocalization.Services
             {
                 Id = existingMap.Id,
                 Name = existingMap.Name,
-                Image = existingMap.Image
+                Image = existingMap.ImageUrl
             };
         }
 
