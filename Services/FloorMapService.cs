@@ -8,46 +8,63 @@ namespace IndoorLocalization.Services
     public class FloorMapService : IFloorMapService
     {
         private readonly IFloorMapRepository _floorMapRepository;
+        private readonly IImageService _imageService;
 
-        public FloorMapService(IFloorMapRepository floorMapRepository)
+        public FloorMapService(IFloorMapRepository floorMapRepository, IImageService imageService)
         {
             _floorMapRepository = floorMapRepository;
+            _imageService = imageService;
         }
 
         public async Task<List<FloorMapResponseDto>> GetAllAsync()
         {
             var floorMaps = await _floorMapRepository.GetAllAsync();
+
             return floorMaps.Select(fm => new FloorMapResponseDto
             {
                 Id = fm.Id,
                 Name = fm.Name,
-                Image = fm.ImageUrl
+                ImageUrl = fm.ImageUrl,
+                ImageWidthPx = fm.ImageWidthPx,
+                ImageHeightPx = fm.ImageHeightPx,
+                WidthM = fm.WidthM,
+                HeightM = fm.HeightM
             }).ToList();
         }
 
         public async Task<FloorMapResponseDto?> GetByIdAsync(long id)
         {
             var floorMap = await _floorMapRepository.GetByIdAsync(id);
-            if (floorMap == null) return null;
+            if (floorMap == null)
+                return null;
 
             return new FloorMapResponseDto
             {
                 Id = floorMap.Id,
                 Name = floorMap.Name,
-                Image = floorMap.ImageUrl
+                ImageUrl = floorMap.ImageUrl,
+                ImageWidthPx = floorMap.ImageWidthPx,
+                ImageHeightPx = floorMap.ImageHeightPx,
+                WidthM = floorMap.WidthM,
+                HeightM = floorMap.HeightM
             };
         }
 
         public async Task<FloorMapResponseDto?> GetByNameAsync(string name)
         {
             var floorMap = await _floorMapRepository.GetByNameAsync(name);
-            if (floorMap == null) return null;
+            if (floorMap == null)
+                return null;
 
             return new FloorMapResponseDto
             {
                 Id = floorMap.Id,
                 Name = floorMap.Name,
-                Image = floorMap.ImageUrl
+                ImageUrl = floorMap.ImageUrl,
+                ImageWidthPx = floorMap.ImageWidthPx,
+                ImageHeightPx = floorMap.ImageHeightPx,
+                WidthM = floorMap.WidthM,
+                HeightM = floorMap.HeightM
             };
         }
 
@@ -56,10 +73,19 @@ namespace IndoorLocalization.Services
             if (await _floorMapRepository.ExistsByNameAsync(dto.Name))
                 throw new InvalidOperationException("Map name already exists.");
 
+            string? imageUrl = null;
+
+            if (dto.ImageFile != null)
+                imageUrl = await _imageService.UploadImageAsync(dto.ImageFile);
+
             var map = new FloorMap
             {
                 Name = dto.Name,
-                ImageUrl = dto.Image
+                ImageUrl = imageUrl,
+                ImageWidthPx = dto.ImageWidthPx,
+                ImageHeightPx = dto.ImageHeightPx,
+                WidthM = dto.WidthM,
+                HeightM = dto.HeightM
             };
 
             await _floorMapRepository.AddAsync(map);
@@ -68,14 +94,19 @@ namespace IndoorLocalization.Services
             {
                 Id = map.Id,
                 Name = map.Name,
-                Image = map.ImageUrl
+                ImageUrl = map.ImageUrl,
+                ImageWidthPx = map.ImageWidthPx,
+                ImageHeightPx = map.ImageHeightPx,
+                WidthM = map.WidthM,
+                HeightM = map.HeightM
             };
         }
 
         public async Task<FloorMapResponseDto?> UpdateAsync(long id, FloorMapUpdateRequestDto dto)
         {
             var existingMap = await _floorMapRepository.GetByIdAsync(id);
-            if (existingMap == null) return null;
+            if (existingMap == null)
+                return null;
 
             if (!string.IsNullOrWhiteSpace(dto.Name))
             {
@@ -88,10 +119,27 @@ namespace IndoorLocalization.Services
                 existingMap.Name = dto.Name;
             }
 
-            if (!string.IsNullOrWhiteSpace(dto.Image))
+            if (dto.ImageFile != null)
             {
-                existingMap.ImageUrl = dto.Image;
+                var oldImageUrl = existingMap.ImageUrl;
+
+                if (!string.IsNullOrEmpty(oldImageUrl))
+                    await _imageService.DeleteImageAsync(oldImageUrl);
+
+                existingMap.ImageUrl = await _imageService.UploadImageAsync(dto.ImageFile);
             }
+
+            if (dto.ImageWidthPx.HasValue)
+                existingMap.ImageWidthPx = dto.ImageWidthPx;
+
+            if (dto.ImageHeightPx.HasValue)
+                existingMap.ImageHeightPx = dto.ImageHeightPx;
+
+            if (dto.WidthM.HasValue)
+                existingMap.WidthM = dto.WidthM.Value;
+
+            if (dto.HeightM.HasValue)
+                existingMap.HeightM = dto.HeightM.Value;
 
             await _floorMapRepository.UpdateAsync(existingMap);
 
@@ -99,7 +147,11 @@ namespace IndoorLocalization.Services
             {
                 Id = existingMap.Id,
                 Name = existingMap.Name,
-                Image = existingMap.ImageUrl
+                ImageUrl = existingMap.ImageUrl,
+                ImageWidthPx = existingMap.ImageWidthPx,
+                ImageHeightPx = existingMap.ImageHeightPx,
+                WidthM = existingMap.WidthM,
+                HeightM = existingMap.HeightM
             };
         }
 

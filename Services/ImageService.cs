@@ -28,5 +28,22 @@ namespace IndoorLocalization.Services
 
             return $"/images/{fileName}";
         }
+
+        public async Task<bool> DeleteImageAsync(string imageUrl)
+        {
+            if (string.IsNullOrEmpty(imageUrl))
+                return false;
+
+            var fileName = Path.GetFileName(imageUrl);
+            var filePath = Path.Combine(_imageStoragePath, fileName);
+
+            if (File.Exists(filePath))
+            {
+                File.Delete(filePath);
+                return true;
+            }
+
+            return false;
+        }
     }
 }
