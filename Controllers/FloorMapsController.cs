@@ -36,7 +36,8 @@ namespace IndoorLocalization.Controllers
 
         // POST /api/floormaps
         [HttpPost]
-        public async Task<IActionResult> Create([FromBody] FloorMapCreateRequestDto dto)
+        [Consumes("multipart/form-data")]
+        public async Task<IActionResult> Create([FromForm] FloorMapCreateRequestDto dto)
         {
             try
             {
@@ -51,7 +52,8 @@ namespace IndoorLocalization.Controllers
 
         // PUT /api/floormaps/{id}
         [HttpPut("{id}")]
-        public async Task<IActionResult> Update(int id, [FromBody] FloorMapUpdateRequestDto dto)
+        [Consumes("multipart/form-data")]
+        public async Task<IActionResult> Update(int id, [FromForm] FloorMapUpdateRequestDto dto)
         {
             try
             {
