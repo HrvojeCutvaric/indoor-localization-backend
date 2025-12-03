@@ -155,6 +155,19 @@ namespace IndoorLocalization.Services
             };
         }
 
+        public async Task<bool> DeleteAsync(long id)
+        {
+            var map = await _floorMapRepository.GetByIdAsync(id);
+            if (map == null)
+                return false;
+
+            if (!string.IsNullOrEmpty(map.ImageUrl))
+                await _imageService.DeleteImageAsync(map.ImageUrl);
+
+            await _floorMapRepository.DeleteAsync(map);
+            return true;
+        }
+
         public async Task<List<AssetResponseDto>> GetAssetsByFloorMapAsync(long mapId)
         {
             var assets = await _floorMapRepository.GetAssetsByFloorMapIdAsync(mapId);

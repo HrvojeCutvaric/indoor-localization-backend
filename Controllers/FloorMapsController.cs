@@ -79,5 +79,17 @@ namespace IndoorLocalization.Controllers
 
             return Ok(assets);
         }
+
+        // DELETE /api/floormaps/{id}
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> Delete(long id)
+        {
+            var deleted = await _floorMapService.DeleteAsync(id);
+
+            if (!deleted)
+                return NotFound(new { message = "Floor map not found" });
+
+            return Ok(new { message = "Floor map deleted successfully" });
+        }
     }
 }

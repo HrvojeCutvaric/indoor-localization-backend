@@ -48,7 +48,8 @@ namespace IndoorLocalization.Repositories
 
         public async Task DeleteAsync(FloorMap map)
         {
-            //TODO : Consider cascading delete for related entities
+            _context.Floormaps.Remove(map);
+            await _context.SaveChangesAsync();
         }
 
         public async Task<List<Asset>> GetAssetsByFloorMapIdAsync(long floorMapId)
