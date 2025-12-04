@@ -1,5 +1,6 @@
 ﻿using IndoorLocalization.Models.DTOs;
 using IndoorLocalization.Services.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -17,6 +18,7 @@ namespace IndoorLocalization.Controllers
 
         // GET /api/floormaps
         [HttpGet]
+        [Authorize]
         public async Task<IActionResult> GetAll()
         {
             var maps = await _floorMapService.GetAllAsync();
@@ -25,6 +27,7 @@ namespace IndoorLocalization.Controllers
 
         // GET /api/floormaps/{id}
         [HttpGet("{id}")]
+        [Authorize]
         public async Task<IActionResult> GetById(int id)
         {
             var map = await _floorMapService.GetByIdAsync(id);
@@ -36,6 +39,7 @@ namespace IndoorLocalization.Controllers
 
         // POST /api/floormaps
         [HttpPost]
+        [Authorize]
         [Consumes("multipart/form-data")]
         public async Task<IActionResult> Create([FromForm] FloorMapCreateRequestDto dto)
         {
@@ -52,6 +56,7 @@ namespace IndoorLocalization.Controllers
 
         // PUT /api/floormaps/{id}
         [HttpPut("{id}")]
+        [Authorize]
         [Consumes("multipart/form-data")]
         public async Task<IActionResult> Update(int id, [FromForm] FloorMapUpdateRequestDto dto)
         {
@@ -71,6 +76,7 @@ namespace IndoorLocalization.Controllers
 
         // GET /api/floormaps/{id}/assets
         [HttpGet("{id}/assets")]
+        [Authorize]
         public async Task<IActionResult> GetAssetsByFloorMapId(int id)
         {
             var assets = await _floorMapService.GetAssetsByFloorMapAsync(id);
@@ -82,6 +88,7 @@ namespace IndoorLocalization.Controllers
 
         // DELETE /api/floormaps/{id}
         [HttpDelete("{id}")]
+        [Authorize]
         public async Task<IActionResult> Delete(long id)
         {
             var deleted = await _floorMapService.DeleteAsync(id);
