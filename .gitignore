@@ -103,6 +103,8 @@ StyleCopReport.xml
 *.pidb
 *.svclog
 *.scc
+docker-data/
+pgdata/
 
 # Chutzpah Test files
 _Chutzpah*
