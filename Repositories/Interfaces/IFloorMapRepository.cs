@@ -13,8 +13,5 @@ namespace IndoorLocalization.Repositories.Interfaces
         Task UpdateAsync(FloorMap map);
         Task DeleteAsync(FloorMap map);
 
-        Task<List<Asset>> GetAssetsByFloorMapIdAsync(long floorMapId);
-
-
     }
 }

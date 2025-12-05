@@ -95,5 +95,30 @@ namespace IndoorLocalization.Repositories
 
             return await _context.SaveChangesAsync() > 0;
         }
+
+        public async Task<IEnumerable<AssetPositionHistory>> GetPositionHistoryAsync(long assetId)
+        {
+            return await _context.Assetpositionhistories
+                .Where(aph => aph.AssetId == assetId)
+                .OrderByDescending(aph => aph.DateTime)
+                .ToListAsync();
+        }
+
+        public async Task<IEnumerable<AssetZoneHistory>> GetZoneHistoryAsync(long assetId)
+        {
+            return await _context.Assetzonehistories
+                .Where(azh => azh.AssetId == assetId)
+                .OrderByDescending(azh => azh.EnterDateTime)
+                .ToListAsync();
+        }
+
+        public async Task<List<Asset>> GetAssetsByFloorMapIdAsync(long floorMapId)
+        {
+            return await _context.Assets
+                .Where(a => a.FloorMapId == floorMapId)
+                .ToListAsync();
+        }
+
+
     }
 }
