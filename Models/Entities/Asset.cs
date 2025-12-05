@@ -12,6 +12,7 @@ public class Asset
     public DateTime? LastSync { get; set; }
     public long? FloorMapId { get; set; }
     public bool Active { get; set; } = true;
+    public string Color { get; set; } = "#FF0000";
 
     public virtual FloorMap? FloorMap { get; set; }
     public virtual ICollection<AssetPositionHistory> AssetPositionHistories { get; set; } = new List<AssetPositionHistory>();

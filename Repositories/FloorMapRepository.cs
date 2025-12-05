@@ -58,7 +58,5 @@ namespace IndoorLocalization.Repositories
                 .Where(a => a.FloorMapId == floorMapId)
                 .ToListAsync();
         }
-
-
     }
 }
