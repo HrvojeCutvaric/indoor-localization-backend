@@ -74,18 +74,6 @@ namespace IndoorLocalization.Controllers
             }
         }
 
-        // GET /api/floormaps/{id}/assets
-        [HttpGet("{id}/assets")]
-        [Authorize]
-        public async Task<IActionResult> GetAssetsByFloorMapId(int id)
-        {
-            var assets = await _floorMapService.GetAssetsByFloorMapAsync(id);
-            if (assets == null)
-                return NotFound(new { message = "Floor map not found" });
-
-            return Ok(assets);
-        }
-
         // DELETE /api/floormaps/{id}
         [HttpDelete("{id}")]
         [Authorize]

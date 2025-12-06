@@ -56,12 +56,14 @@ builder.Services.AddScoped<IJwtService, JwtService>();
 // Repositories
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IFloorMapRepository, FloorMapRepository>();
+builder.Services.AddScoped<IAssetRepository, AssetRepository>();
 
 // Services
 builder.Services.AddScoped<IAuthManager, AuthManager>();
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IFloorMapService, FloorMapService>();
 builder.Services.AddScoped<IImageService, ImageService>();
+builder.Services.AddScoped<IAssetService, AssetService>();
 
 // JWT Authentication
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
