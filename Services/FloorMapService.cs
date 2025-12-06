@@ -167,20 +167,5 @@ namespace IndoorLocalization.Services
             await _floorMapRepository.DeleteAsync(map);
             return true;
         }
-
-        public async Task<List<AssetResponseDto>> GetAssetsByFloorMapAsync(long mapId)
-        {
-            var assets = await _floorMapRepository.GetAssetsByFloorMapIdAsync(mapId);
-            return assets.Select(a => new AssetResponseDto
-            {
-                Id = a.Id,
-                Name = a.Name,
-                X = a.X,
-                Y = a.Y,
-                LastSync = a.LastSync,
-                Active = a.Active
-
-            }).ToList();
-        }
     }
 }
