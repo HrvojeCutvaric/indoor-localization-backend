@@ -12,7 +12,5 @@ namespace IndoorLocalization.Services.Interfaces
         Task<FloorMapResponseDto?> UpdateAsync(long id, FloorMapUpdateRequestDto dto);
 
         Task<bool> DeleteAsync(long id);
-
-        Task<List<AssetResponseDto>> GetAssetsByFloorMapAsync(long mapId);
     }
 }

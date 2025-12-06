@@ -3,6 +3,7 @@ using System;
 using IndoorLocalization.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace IndoorLocalization.Migrations
 {
     [DbContext(typeof(IndoorLocalizationContext))]
-    partial class IndoorLocalizationContextModelSnapshot : ModelSnapshot
+    [Migration("20251205191839_AddColorToAssets")]
+    partial class AddColorToAssets
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

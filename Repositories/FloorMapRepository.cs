@@ -52,13 +52,6 @@ namespace IndoorLocalization.Repositories
             await _context.SaveChangesAsync();
         }
 
-        public async Task<List<Asset>> GetAssetsByFloorMapIdAsync(long floorMapId)
-        {
-            return await _context.Assets
-                .Where(a => a.FloorMapId == floorMapId)
-                .ToListAsync();
-        }
-
-
+        
     }
 }

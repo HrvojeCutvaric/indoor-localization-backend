@@ -47,6 +47,7 @@ public partial class IndoorLocalizationContext : DbContext
                 .HasColumnName("name");
             entity.Property(e => e.X).HasColumnName("x");
             entity.Property(e => e.Y).HasColumnName("y");
+            entity.Property(e => e.Color).HasColumnName("color");
 
             entity.HasOne(d => d.FloorMap).WithMany(p => p.Assets)
                 .HasForeignKey(d => d.FloorMapId)
