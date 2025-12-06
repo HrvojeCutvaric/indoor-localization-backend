@@ -1,6 +1,6 @@
 ﻿namespace IndoorLocalization.Models.DTOs
 {
-    public class AssetUpdateNameColorRequest
+    public class AssetUpdateNameColorRequestDto
     {
         public string? Name { get; set; }
         public string? Color { get; set; }

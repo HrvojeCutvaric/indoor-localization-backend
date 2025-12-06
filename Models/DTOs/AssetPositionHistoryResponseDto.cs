@@ -1,6 +1,6 @@
 ﻿namespace IndoorLocalization.Models.DTOs
 {
-    public class AssetPositionHistoryResponse
+    public class AssetPositionHistoryResponseDto
     {
         public long Id { get; set; }
         public long? AssetId { get; set; }
