@@ -18,7 +18,6 @@ namespace IndoorLocalization.Controllers
             _assetService = assetService;
         }
 
-        // GET /api/assets
         [HttpGet]
         public async Task<IActionResult> GetAll()
         {
@@ -26,7 +25,6 @@ namespace IndoorLocalization.Controllers
             return Ok(assets);
         }
 
-        // GET /api/assets/{id}
         [HttpGet("{id}")]
         public async Task<IActionResult> GetById(long id)
         {
@@ -37,7 +35,6 @@ namespace IndoorLocalization.Controllers
             return Ok(asset);
         }
 
-        // GET /api/assets/name/{name}
         [HttpGet("name/{name}")]
         public async Task<IActionResult> GetByName(string name)
         {
@@ -48,7 +45,6 @@ namespace IndoorLocalization.Controllers
             return Ok(asset);
         }
 
-        // GET /api/assets/floormap/{floorMapId}
         [HttpGet("floormap/{floorMapId}")]
         public async Task<IActionResult> GetByFloorMap(long floorMapId)
         {
@@ -56,7 +52,6 @@ namespace IndoorLocalization.Controllers
             return Ok(list);
         }
 
-        // POST /api/assets
         [HttpPost]
         public async Task<IActionResult> Create([FromBody] AssetCreateRequestDto dto)
         {
@@ -75,7 +70,6 @@ namespace IndoorLocalization.Controllers
             }
         }
 
-        // PUT /api/assets/{id}
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateNameAndColor(long id, [FromBody] AssetUpdateNameColorRequestDto dto)
         {
@@ -86,7 +80,6 @@ namespace IndoorLocalization.Controllers
             return Ok(new { message = "Asset updated successfully" });
         }
 
-        // PUT /api/assets/{id}/status
         [HttpPut("{id}/status")]
         public async Task<IActionResult> UpdateStatus(long id, [FromBody] AssetUpdateStatusRequestDto dto)
         {
@@ -97,7 +90,6 @@ namespace IndoorLocalization.Controllers
             return Ok(new { message = "Status updated" });
         }
 
-        // PUT /api/assets/{id}/coordinates
         [HttpPut("{id}/coordinates")]
         public async Task<IActionResult> UpdateCoordinates(long id, [FromBody] AssetUpdateCoordinatesRequestDto dto)
         {
@@ -108,7 +100,6 @@ namespace IndoorLocalization.Controllers
             return Ok(new { message = "Coordinates updated" });
         }
 
-        // PUT /api/assets/{id}/floormap
         [HttpPut("{id}/floormap")]
         public async Task<IActionResult> UpdateFloorMap(long id, [FromBody] AssetUpdateFloorMapRequestDto dto)
         {
@@ -119,7 +110,6 @@ namespace IndoorLocalization.Controllers
             return Ok(new { message = "Floor map updated" });
         }
 
-        // GET /api/assets/{id}/history/position
         [HttpGet("{id}/history/position")]
         public async Task<IActionResult> GetPositionHistory(long id)
         {
@@ -127,7 +117,6 @@ namespace IndoorLocalization.Controllers
             return Ok(history);
         }
 
-        // GET /api/assets/{id}/history/zones
         [HttpGet("{id}/history/zones")]
         public async Task<IActionResult> GetZoneHistory(long id)
         {
@@ -135,7 +124,6 @@ namespace IndoorLocalization.Controllers
             return Ok(history);
         }
 
-        // DELETE /api/assets/{id}
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(long id)
         {
