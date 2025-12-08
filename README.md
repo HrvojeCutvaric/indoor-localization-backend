@@ -12,15 +12,12 @@ dotnet --version
 
 ---
 
-## 2. Clean old containers (if init.sql was used before)
+## 2. Clean old containers 
 
 In the **root folder** of the project:
 
 docker compose down -v
 
-
-Because the previous setup used `init.sql`, you must remove old containers, images, and volumes.  
-You can also delete old images through the Docker Desktop UI.
 
 If the database was modified manually inside the container, remove the volume completely:
 
@@ -42,13 +39,19 @@ POSTGRES_PASSWORD=<postgres_password>
 POSTGRES_DB=<db_name>
 
 JWT_SECRET=<secret_with_minimum_32_characters>
-
-
-⚠️ `JWT_SECRET` must contain at least 32 characters (HS256 requirement).
+`JWT_SECRET` must contain at least 32 characters (HS256 requirement).
 
 ---
 
-## 4. Starting the Docker environment
+## 4. Starting the Docker environment - after new REST paths are added or schema changes
+
+### Clean old containers
+docker compose down -v
+
+Remove volumes, containers and images mannualy in docker desktop if needed.
+
+### If database schema changed
+dontet ef database update
 
 ### Build everything:
 
@@ -95,9 +98,7 @@ List tables:
 
 ---
 
-# ⚠️ DATABASE SCHEMA CHANGES (IMPORTANT)
-
-When backend entity models change, the database **must not be edited manually**.
+# DATABASE SCHEMA CHANGES (IMPORTANT)
 
 Use Entity Framework Core migrations.
 
@@ -120,9 +121,3 @@ Backend automatically executes:
 
 db.Database.Migrate();
 
-
-This applies all new migrations to the PostgreSQL database.
-
-
-#  NEVER USE `init.sql` AGAIN  
-All schema changes must be done exclusively through **EF Core migrations*
