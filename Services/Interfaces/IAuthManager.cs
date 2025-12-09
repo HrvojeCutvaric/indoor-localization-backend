@@ -8,5 +8,7 @@ namespace IndoorLocalization.Services.Interfaces
         Task<LoginResponseDto?> LoginAsync(LoginRequestDto dto);
         Task<User> RegisterAsync(RegisterRequestDto dto);
         Task<RefreshTokenResponseDto?> RefreshTokenAsync(RefreshTokenRequestDto dto);
+        Task SendOtpAsync(string email);
+        Task<object?> VerifyOtpAsync(string email, string otp);
     }
 }

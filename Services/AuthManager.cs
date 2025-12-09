@@ -17,13 +17,17 @@ namespace IndoorLocalization.Services
         private readonly IPasswordHasher _passwordHasher;
         private readonly IUserService _userService;
         private readonly IJwtService _jwtService;
+        private readonly IOtpService _otpService;
+        private readonly IEmailService _emailService;
 
-        public AuthManager(IUserRepository userRepository, IPasswordHasher passwordHasher, IUserService userService, IJwtService jwtService)
+        public AuthManager(IUserRepository userRepository, IPasswordHasher passwordHasher, IUserService userService, IJwtService jwtService, IOtpService otpService, IEmailService emailService)
         {
             _userRepository = userRepository;
             _passwordHasher = passwordHasher;
             _userService = userService;
             _jwtService = jwtService;
+            _otpService = otpService;
+            _emailService = emailService;
         }
 
         public async Task<User> RegisterAsync(RegisterRequestDto dto)
@@ -158,6 +162,49 @@ namespace IndoorLocalization.Services
         {
             if (await _userRepository.ExistsByUsernameAsync(username))
                 throw new InvalidOperationException("Username already taken.");
+        }
+
+        public async Task SendOtpAsync(string email)
+        {
+            var user = await _userRepository.GetByEmailAsync(email);
+            if (user == null)
+            {
+                await Task.Delay(500);
+                return;
+            }
+
+            var otpCode = await _otpService.GenerateAndStoreOtpAsync(user.Id);
+
+            await _emailService.SendOtpEmailAsync(user.Email, otpCode);
+        }
+
+        public async Task<object?> VerifyOtpAsync(string email, string otp)
+        {
+            var user = await _userRepository.GetByEmailAsync(email);
+            if (user == null) return (long)-1;
+
+            var validatedResult = await _otpService.ValidateOtpAsync(user.Id, otp);
+
+            if (validatedResult < 0)
+            {
+                return (long)validatedResult;
+            }
+
+            var accessToken = _jwtService.CreateToken(user);
+            var refreshToken = _jwtService.GenerateRefreshToken();
+
+            user.RefreshToken = refreshToken;
+            user.RefreshTokenExpiry = DateTime.UtcNow.AddDays(7);
+            await _userService.UpdateTokenAsync(user);
+
+            return new LoginResponseDto
+            {
+                AccessToken = accessToken,
+                RefreshToken = refreshToken,
+                UserId = user.Id,
+                Username = user.Username,
+                Email = user.Email
+            };
         }
     }
 }

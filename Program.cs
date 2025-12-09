@@ -57,6 +57,7 @@ builder.Services.AddScoped<IJwtService, JwtService>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IFloorMapRepository, FloorMapRepository>();
 builder.Services.AddScoped<IAssetRepository, AssetRepository>();
+builder.Services.AddScoped<IOtpRepository, OtpRepository>();
 
 // Services
 builder.Services.AddScoped<IAuthManager, AuthManager>();
@@ -64,6 +65,8 @@ builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IFloorMapService, FloorMapService>();
 builder.Services.AddScoped<IImageService, ImageService>();
 builder.Services.AddScoped<IAssetService, AssetService>();
+builder.Services.AddScoped<IOtpService, OtpService>();
+builder.Services.AddScoped<IEmailService, EmailService>();
 
 // JWT Authentication
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
