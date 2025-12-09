@@ -63,5 +63,52 @@ namespace IndoorLocalization.Controllers
 
             return Ok(result);
         }
+
+        [HttpPost("otp/send")]
+        [AllowAnonymous]
+        public async Task<IActionResult> SendOtp([FromBody] OtpSendRequestDto request)
+        {
+            if (string.IsNullOrWhiteSpace(request.Email))
+            {
+                return BadRequest(new { message = "Email is required." });
+            }
+
+            await _authManager.SendOtpAsync(request.Email);
+
+            return Ok(new { message = "If the email is registered, an OTP code has been sent." });
+
+        }
+
+        [HttpPost("otp/verify")]
+        [AllowAnonymous]
+        public async Task<IActionResult> VerifyOtp([FromBody] OtpVerifyRequestDto request)
+        {
+            if (string.IsNullOrWhiteSpace(request.Email) || string.IsNullOrWhiteSpace(request.Otp))
+            {
+                return BadRequest(new { message = "Email and OTP code are required." });
+            }
+
+            var result = await _authManager.VerifyOtpAsync(request.Email, request.Otp);
+
+            if (result is long errorCode && errorCode < 0)
+            {
+                string errorMessage = errorCode switch
+                {
+                    -1 => "Invalid email or OTP code.",
+                    -2 => "OTP code has already been used. Please request a new code.",
+                    -3 => "OTP code has expired. Please request a new code.",
+                    -4 => "Maximum attempts reached. Please request a new code.",
+                    _ => "An unexpected authentication error occurred."
+                };
+
+                return Unauthorized(new { message = errorMessage, errorCode = errorCode });
+            }
+
+            if (result == null || result is not LoginResponseDto)
+            {
+                return Unauthorized(new { message = "Authentication failed. Result type mismatch." });
+            }
+            return Ok(result);
+        }
     }
 }
