@@ -104,6 +104,22 @@ namespace IndoorLocalization.Repositories
                 .ToListAsync();
         }
 
+        public async Task<bool> AddPositionHistoryAsync(long assetId, double x, double y, long floorMapId, DateTime timestamp)
+        {
+            var history = new AssetPositionHistory
+            {
+                AssetId = assetId,
+                X = x,
+                Y = y,
+                FloorMapId = floorMapId,
+                DateTime = timestamp
+            };
+
+            _context.Assetpositionhistories.Add(history);
+
+            return await _context.SaveChangesAsync() > 0;
+        }
+
         public async Task<IEnumerable<AssetZoneHistory>> GetZoneHistoryAsync(long assetId)
         {
             return await _context.Assetzonehistories

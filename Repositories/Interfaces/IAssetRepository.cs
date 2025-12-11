@@ -17,6 +17,7 @@ namespace IndoorLocalization.Repositories.Interfaces
         Task<bool> DeleteAsync(Asset asset);
         
         Task<IEnumerable<AssetPositionHistory>> GetPositionHistoryAsync(long assetId);
+        Task<bool> AddPositionHistoryAsync(long assetId, double x, double y, long floorMapId, DateTime timestamp);
         Task<IEnumerable<AssetZoneHistory>> GetZoneHistoryAsync(long assetId);
 
 
