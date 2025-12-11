@@ -73,9 +73,17 @@ namespace IndoorLocalization.Controllers
                 return BadRequest(new { message = "Email is required." });
             }
 
-            await _authManager.SendOtpAsync(request.Email);
+            var result = await _authManager.SendOtpAsync(request.Email);
 
-            return Ok(new { message = "If the email is registered, an OTP code has been sent." });
+            if(result is long errorCode && errorCode < 0)
+            {
+                if(errorCode == -100)
+                {
+                    return NotFound(new { message = "User not found.", errorCode = errorCode });
+                }
+            }
+
+            return Ok(new { message = "OTP code has been sent to the registered email address." });
 
         }
 
