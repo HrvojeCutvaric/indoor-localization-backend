@@ -1,4 +1,5 @@
 using IndoorLocalization.Data;
+using IndoorLocalization.Mqtt;
 using IndoorLocalization.Repositories;
 using IndoorLocalization.Repositories.Interfaces;
 using IndoorLocalization.Security;
@@ -67,6 +68,9 @@ builder.Services.AddScoped<IImageService, ImageService>();
 builder.Services.AddScoped<IAssetService, AssetService>();
 builder.Services.AddScoped<IOtpService, OtpService>();
 builder.Services.AddScoped<IEmailService, EmailService>();
+
+// MQTT listener
+builder.Services.AddHostedService<AssetPositionMqttListener>();
 
 // JWT Authentication
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)

@@ -20,6 +20,7 @@ namespace IndoorLocalization.Services.Interfaces
         Task<bool> DeleteAsync(long id);
 
         Task<IEnumerable<AssetPositionHistoryResponseDto>> GetPositionHistoryAsync(long assetId);
+        Task<bool> AddPositionHistoryAsync(long assetId, double x, double y, long floorMapId, DateTime timestamp);
         Task<IEnumerable<AssetZoneHistoryResponseDto>> GetZoneHistoryAsync(long assetId);
     }
 }
