@@ -164,18 +164,20 @@ namespace IndoorLocalization.Services
                 throw new InvalidOperationException("Username already taken.");
         }
 
-        public async Task SendOtpAsync(string email)
+        public async Task<long> SendOtpAsync(string email)
         {
             var user = await _userRepository.GetByEmailAsync(email);
             if (user == null)
             {
                 await Task.Delay(500);
-                return;
+                return -100;
             }
 
             var otpCode = await _otpService.GenerateAndStoreOtpAsync(user.Id);
 
             await _emailService.SendOtpEmailAsync(user.Email, otpCode);
+
+            return 0;
         }
 
         public async Task<object?> VerifyOtpAsync(string email, string otp)
