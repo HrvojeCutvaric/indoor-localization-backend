@@ -2,6 +2,7 @@
 using IndoorLocalization.Models.Entities;
 using IndoorLocalization.Repositories.Interfaces;
 using IndoorLocalization.Services.Interfaces;
+using System.Text.Json;
 
 namespace IndoorLocalization.Services
 {
@@ -59,7 +60,7 @@ namespace IndoorLocalization.Services
             var zone = new Zone
             {
                 Name = dto.Name,
-                Points = dto.Points,
+                Points = JsonSerializer.Serialize(dto.Points),
                 FloorMapId = dto.FloorMapId
             };
 
@@ -80,7 +81,7 @@ namespace IndoorLocalization.Services
             if (zone == null) return false;
 
             zone.Name = dto.Name;
-            zone.Points = dto.Points;
+            zone.Points = JsonSerializer.Serialize(dto.Points);
 
             return await _zoneRepository.UpdateAsync(zone);
         }
