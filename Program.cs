@@ -72,6 +72,7 @@ builder.Services.AddScoped<IOtpService, OtpService>();
 builder.Services.AddScoped<IEmailService, EmailService>();
 builder.Services.AddScoped<IZoneService, ZoneService>();
 builder.Services.AddScoped<IAssetZoneHistoryService, AssetZoneHistoryService>();
+builder.Services.AddScoped<IZoneDetectionService, ZoneDetectionService>();
 
 // MQTT listener
 builder.Services.AddHostedService<AssetPositionMqttListener>();
