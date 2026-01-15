@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace IndoorLocalization.Repositories
 {
-    public class AssetZoneHistoryRepository : IAssetRepository
+    public class AssetZoneHistoryRepository : IAssetZoneHistoryRepository
     {
         private readonly IndoorLocalizationContext _context;
 
