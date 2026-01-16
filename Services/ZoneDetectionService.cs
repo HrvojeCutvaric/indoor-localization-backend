@@ -37,12 +37,12 @@ namespace IndoorLocalization.Services
                 if (pointDtos == null || pointDtos.Count != 4)
                     continue;
 
-                var points = pointDtos
+                var polygon = pointDtos
                     .OrderBy(p => p.OrdinalNumber)
                     .Select(p => new Point2D(p.X, p.Y))
                     .ToList();
 
-                bool isInside = IsInsideRectangle(x, y, points[0], points[1], points[2], points[3]);
+                bool isInside = IsPointInsidePolygon(x, y, polygon);
 
                 var activeEntry = activeZoneEntries.FirstOrDefault(e => e.ZoneId == zone.Id);
 
@@ -61,24 +61,24 @@ namespace IndoorLocalization.Services
 
         }
 
-        private bool IsInsideRectangle(
-                double assetX,
-                double assetY,
-                Point2D p1,
-                Point2D p2,
-                Point2D p3,
-                Point2D p4)
+        private bool IsPointInsidePolygon(double x, double y, IReadOnlyList<Point2D> polygon)
         {
-            var minX = Math.Min(Math.Min(p1.X, p2.X), Math.Min(p3.X, p4.X));
-            var maxX = Math.Max(Math.Max(p1.X, p2.X), Math.Max(p3.X, p4.X));
+            bool inside = false;
 
-            var minY = Math.Min(Math.Min(p1.Y, p2.Y), Math.Min(p3.Y, p4.Y));
-            var maxY = Math.Max(Math.Max(p1.Y, p2.Y), Math.Max(p3.Y, p4.Y));
+            for (int i = 0, j = polygon.Count - 1; i < polygon.Count; j = i++)
+            {
+                var pi = polygon[i];
+                var pj = polygon[j];
 
-            return assetX > minX &&
-                   assetX < maxX &&
-                   assetY > minY &&
-                   assetY < maxY;
+                bool intersect =
+                    ((pi.Y > y) != (pj.Y > y)) &&
+                    (x < (pj.X - pi.X) * (y - pi.Y) / (pj.Y - pi.Y) + pi.X);
+
+                if (intersect)
+                    inside = !inside;
+            }
+
+            return inside;
         }
 
     }
