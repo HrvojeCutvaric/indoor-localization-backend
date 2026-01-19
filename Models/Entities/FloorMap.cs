@@ -13,6 +13,7 @@ public class FloorMap
     public double WidthInMeters { get; set; }
     public double HeightInMeters { get; set; }
 
+    public virtual ICollection<Zone> Zones { get; set; } = new List<Zone>();
     public virtual ICollection<Asset> Assets { get; set; } = new List<Asset>();
     public virtual ICollection<AssetPositionHistory> AssetPositionHistories { get; set; } = new List<AssetPositionHistory>();
 }

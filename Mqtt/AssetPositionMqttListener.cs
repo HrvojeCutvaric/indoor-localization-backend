@@ -43,6 +43,7 @@ namespace IndoorLocalization.Mqtt
             using var scope = _scopeFactory.CreateScope();
             var assetService = scope.ServiceProvider.GetRequiredService<IAssetService>();
             var floorMapService = scope.ServiceProvider.GetRequiredService<IFloorMapService>();
+            var zoneDetectionService = scope.ServiceProvider.GetRequiredService<IZoneDetectionService>();
 
             try
             {
@@ -74,6 +75,14 @@ namespace IndoorLocalization.Mqtt
                 await assetService.UpdateCoordinatesAsync(assetPositionDto.AssetId, updateAssetCoordinates);
 
                 await assetService.AddPositionHistoryAsync(
+                    assetPositionDto.AssetId,
+                    assetPositionDto.X,
+                    assetPositionDto.Y,
+                    assetPositionDto.FloorMapId,
+                    assetPositionDto.Timestamp
+                );
+
+                await zoneDetectionService.ProcessAssetPositionAsync(
                     assetPositionDto.AssetId,
                     assetPositionDto.X,
                     assetPositionDto.Y,
