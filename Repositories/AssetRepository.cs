@@ -112,6 +112,14 @@ namespace IndoorLocalization.Repositories
                 .ToListAsync();
         }
 
+        public async Task<IEnumerable<AssetPositionHistory>> GetPositionHistoryByFloorMapAsync(long floorMapId, DateTime from, DateTime to)
+        {
+            return await _context.Assetpositionhistories
+                .Where(aph => aph.FloorMapId == floorMapId && aph.DateTime >= from && aph.DateTime <= to)
+                .OrderBy(aph => aph.DateTime)
+                .ToListAsync();
+        }
+
         public async Task<bool> AddPositionHistoryAsync(long assetId, double x, double y, long floorMapId, DateTime timestamp)
         {
             var history = new AssetPositionHistory

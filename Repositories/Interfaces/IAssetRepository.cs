@@ -18,6 +18,7 @@ namespace IndoorLocalization.Repositories.Interfaces
         
         Task<IEnumerable<AssetPositionHistory>> GetPositionHistoryAsync(long assetId);
         Task<IEnumerable<AssetPositionHistory>> GetPositionHistoryByRangeAsync(long assetId, DateTime from, DateTime to);
+        Task<IEnumerable<AssetPositionHistory>> GetPositionHistoryByFloorMapAsync(long floorMapId, DateTime from, DateTime to);
         Task<bool> AddPositionHistoryAsync(long assetId, double x, double y, long floorMapId, DateTime timestamp);
         Task<IEnumerable<AssetZoneHistory>> GetZoneHistoryAsync(long assetId);
 
