@@ -157,6 +157,21 @@ namespace IndoorLocalization.Services
             });
         }
 
+        public async Task<IEnumerable<AssetPositionHistoryResponseDto>> GetPositionHistoryByRangeAsync(long assetId, DateTime from, DateTime to)
+        {
+            var list = await _assetRepository.GetPositionHistoryByRangeAsync(assetId, from, to);
+
+            return list.Select(h => new AssetPositionHistoryResponseDto
+            {
+                Id = h.Id,
+                AssetId = h.AssetId,
+                FloorMapId = h.FloorMapId,
+                X = h.X,
+                Y = h.Y,
+                DateTime = h.DateTime
+            });
+        }
+
         public async Task<bool> AddPositionHistoryAsync(long assetId, double x, double y, long floorMapId, DateTime timestamp)
         {
             return await _assetRepository.AddPositionHistoryAsync(assetId, x, y, floorMapId, timestamp);
