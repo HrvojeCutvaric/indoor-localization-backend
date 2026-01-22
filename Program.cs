@@ -61,6 +61,7 @@ builder.Services.AddScoped<IAssetRepository, AssetRepository>();
 builder.Services.AddScoped<IOtpRepository, OtpRepository>();
 builder.Services.AddScoped<IZoneRepository, ZoneRepository>();
 builder.Services.AddScoped<IAssetZoneHistoryRepository, AssetZoneHistoryRepository>();
+builder.Services.AddScoped<IReportsRepository, ReportsRepository>();
 
 // Services
 builder.Services.AddScoped<IAuthManager, AuthManager>();
@@ -73,6 +74,7 @@ builder.Services.AddScoped<IEmailService, EmailService>();
 builder.Services.AddScoped<IZoneService, ZoneService>();
 builder.Services.AddScoped<IAssetZoneHistoryService, AssetZoneHistoryService>();
 builder.Services.AddScoped<IZoneDetectionService, ZoneDetectionService>();
+builder.Services.AddScoped<IReportsService, ReportsService>();
 
 // MQTT listener
 builder.Services.AddHostedService<AssetPositionMqttListener>();

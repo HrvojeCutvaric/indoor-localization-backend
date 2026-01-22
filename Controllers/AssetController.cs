@@ -117,26 +117,6 @@ namespace IndoorLocalization.Controllers
             return Ok(history);
         }
 
-        [HttpGet("{id}/history/position/range")]
-        public async Task<IActionResult> GetPositionHistoryByRange(long id, [FromQuery] DateTime from, [FromQuery] DateTime to)
-        {
-            if (from > to)
-                return BadRequest(new { message = "'from' date must be earlier than 'to' date" });
-
-            var history = await _assetService.GetPositionHistoryByRangeAsync(id, from, to);
-            return Ok(history);
-        }
-
-        [HttpGet("floormap/{floorMapId}/history/position")]
-        public async Task<IActionResult> GetPositionHistoryByFloorMap(long floorMapId, [FromQuery] DateTime from, [FromQuery] DateTime to)
-        {
-            if (from > to)
-                return BadRequest(new { message = "'from' date must be earlier than 'to' date" });
-
-            var history = await _assetService.GetPositionHistoryByFloorMapAsync(floorMapId, from, to);
-            return Ok(history);
-        }
-
         [HttpGet("{id}/history/zones")]
         public async Task<IActionResult> GetZoneHistory(long id)
         {
