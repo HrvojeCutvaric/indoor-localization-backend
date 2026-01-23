@@ -1,4 +1,5 @@
 ﻿using IndoorLocalization.Models.DTOs;
+using IndoorLocalization.Models.Entities;
 
 namespace IndoorLocalization.Services.Interfaces
 {
