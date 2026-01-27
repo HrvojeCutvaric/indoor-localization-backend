@@ -3,6 +3,8 @@ using IndoorLocalization.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using IndoorLocalization.Models.Responses;
+
 
 namespace IndoorLocalization.Controllers
 {
@@ -22,7 +24,7 @@ namespace IndoorLocalization.Controllers
         public async Task<IActionResult> GetAll()
         {
             var assets = await _assetService.GetAllAsync();
-            return Ok(assets);
+            return Ok(ApiResponse<object>.Ok(assets, "Assets retrieved successfully."));
         }
 
         [HttpGet("{id}")]
@@ -30,9 +32,9 @@ namespace IndoorLocalization.Controllers
         {
             var asset = await _assetService.GetByIdAsync(id);
             if (asset == null)
-                return NotFound(new { message = "Asset not found" });
+                return NotFound(ApiResponse<object>.Fail("Asset not found.", "NOT_FOUND"));
 
-            return Ok(asset);
+            return Ok(ApiResponse<object>.Ok(asset, "Asset retrieved successfully."));
         }
 
         [HttpGet("name/{name}")]
@@ -40,16 +42,16 @@ namespace IndoorLocalization.Controllers
         {
             var asset = await _assetService.GetByNameAsync(name);
             if (asset == null)
-                return NotFound(new { message = "Asset not found" });
+                return NotFound(ApiResponse<object>.Fail("Asset not found.", "NOT_FOUND"));
 
-            return Ok(asset);
+            return Ok(ApiResponse<object>.Ok(asset, "Asset retrieved successfully."));
         }
 
         [HttpGet("floormap/{floorMapId}")]
         public async Task<IActionResult> GetByFloorMap(long floorMapId)
         {
             var list = await _assetService.GetAssetsByFloorMapAsync(floorMapId);
-            return Ok(list);
+            return Ok(ApiResponse<object>.Ok(list, "Assets for floor map retrieved successfully."));
         }
 
         [HttpPost]
@@ -58,15 +60,15 @@ namespace IndoorLocalization.Controllers
             try
             {
                 var created = await _assetService.CreateAsync(dto);
-                return Ok(created);
+                return Ok(ApiResponse<object>.Ok(created, "Asset created successfully."));
             }
             catch (ArgumentException ex)
             {
-                return BadRequest(new { message = ex.Message });
+                return BadRequest(ApiResponse<object>.Fail(ex.Message, "VALIDATION_ERROR"));
             }
             catch (InvalidOperationException ex)
             {
-                return Conflict(new { message = ex.Message });
+                return Conflict(ApiResponse<object>.Fail(ex.Message, "ALREADY_EXISTS"));
             }
         }
 
@@ -75,9 +77,9 @@ namespace IndoorLocalization.Controllers
         {
             var success = await _assetService.UpdateNameAndColorAsync(id, dto);
             if (!success)
-                return NotFound(new { message = "Asset not found" });
+                return NotFound(ApiResponse<object>.Fail("Asset not found.", "NOT_FOUND"));
 
-            return Ok(new { message = "Asset updated successfully" });
+            return Ok(ApiResponse<object?>.Ok(null, "Asset updated successfully."));
         }
 
         [HttpPut("{id}/status")]
@@ -85,9 +87,9 @@ namespace IndoorLocalization.Controllers
         {
             var success = await _assetService.UpdateStatusAsync(id, dto);
             if (!success)
-                return NotFound(new { message = "Asset not found" });
+                return NotFound(ApiResponse<object>.Fail("Asset not found.", "NOT_FOUND"));
 
-            return Ok(new { message = "Status updated" });
+            return Ok(ApiResponse<object?>.Ok(null, "Asset status updated successfully."));
         }
 
         [HttpPut("{id}/coordinates")]
@@ -95,9 +97,9 @@ namespace IndoorLocalization.Controllers
         {
             var success = await _assetService.UpdateCoordinatesAsync(id, dto);
             if (!success)
-                return NotFound(new { message = "Asset not found" });
+                return NotFound(ApiResponse<object>.Fail("Asset not found.", "NOT_FOUND"));
 
-            return Ok(new { message = "Coordinates updated" });
+            return Ok(ApiResponse<object?>.Ok(null, "Asset coordinates updated successfully."));
         }
 
         [HttpPut("{id}/floormap")]
@@ -105,23 +107,23 @@ namespace IndoorLocalization.Controllers
         {
             var success = await _assetService.UpdateFloorMapAsync(id, dto);
             if (!success)
-                return NotFound(new { message = "Asset not found" });
+                return NotFound(ApiResponse<object>.Fail("Asset not found.", "NOT_FOUND"));
 
-            return Ok(new { message = "Floor map updated" });
+            return Ok(ApiResponse<object?>.Ok(null, "Asset floor map updated successfully."));
         }
 
         [HttpGet("{id}/history/position")]
         public async Task<IActionResult> GetPositionHistory(long id)
         {
             var history = await _assetService.GetPositionHistoryAsync(id);
-            return Ok(history);
+            return Ok(ApiResponse<object>.Ok(history, "Asset position history retrieved successfully."));
         }
 
         [HttpGet("{id}/history/zones")]
         public async Task<IActionResult> GetZoneHistory(long id)
         {
             var history = await _assetService.GetZoneHistoryAsync(id);
-            return Ok(history);
+            return Ok(ApiResponse<object>.Ok(history, "Asset zone history retrieved successfully."));
         }
 
         [HttpDelete("{id}")]
@@ -129,9 +131,9 @@ namespace IndoorLocalization.Controllers
         {
             var success = await _assetService.DeleteAsync(id);
             if (!success)
-                return NotFound(new { message = "Asset not found" });
+                return NotFound(ApiResponse<object>.Fail("Asset not found.", "NOT_FOUND"));
 
-            return Ok(new { message = "Asset deleted successfully" });
+            return Ok(ApiResponse<object?>.Ok(null, "Asset deleted successfully."));
         }
     }
 }
