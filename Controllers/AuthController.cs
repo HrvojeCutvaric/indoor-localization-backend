@@ -2,6 +2,7 @@
 using IndoorLocalization.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using IndoorLocalization.Models.Responses;
 
 namespace IndoorLocalization.Controllers
 {
@@ -23,15 +24,19 @@ namespace IndoorLocalization.Controllers
             try
             {
                 var user = await _authManager.RegisterAsync(dto);
-                return Created("", new { user.Id, user.Username, user.Email });
+                return Created(string.Empty,
+                   ApiResponse<object>.Ok(
+                       new { user.Id, user.Username, user.Email },
+                       "User registered successfully."
+                   ));
             }
             catch (ArgumentException ex)
             {
-                return BadRequest(new { message = ex.Message });
+                return BadRequest(ApiResponse<object>.Fail(ex.Message, "VALIDATION_ERROR"));
             }
             catch (InvalidOperationException ex)
             {
-                return Conflict(new { message = ex.Message });
+                return Conflict(ApiResponse<object>.Fail(ex.Message, "ALREADY_EXISTS"));
             }
         }
 
@@ -43,13 +48,16 @@ namespace IndoorLocalization.Controllers
             {
                 var result = await _authManager.LoginAsync(dto);
                 if (result == null)
-                    return Unauthorized(new { message = "Invalid credentials" });
+                    return Unauthorized(ApiResponse<object>.Fail("Invalid username or password.", "INVALID_CREDENTIALS"));
 
-                return Ok(result);
+                return Ok(ApiResponse<LoginResponseDto>.Ok(
+                    result,
+                    "Login successful"
+                ));
             }
             catch (ArgumentException ex)
             {
-                return BadRequest(new { message = ex.Message });
+                return BadRequest(ApiResponse<object>.Fail(ex.Message, "VALIDATION_ERROR"));
             }
         }
 
@@ -59,9 +67,14 @@ namespace IndoorLocalization.Controllers
         {
             var result = await _authManager.RefreshTokenAsync(dto);
             if (result == null)
-                return Unauthorized(new { message = "Invalid refresh token" });
+            {
+                return Unauthorized(ApiResponse<object>.Fail("Invalid refresh token.", "UNAUTHORIZED"));
+            }
 
-            return Ok(result);
+            return Ok(ApiResponse<RefreshTokenResponseDto>.Ok(
+                result,
+                "Token refreshed successfully."
+            ));
         }
 
         [HttpPost("otp/send")]
@@ -70,20 +83,17 @@ namespace IndoorLocalization.Controllers
         {
             if (string.IsNullOrWhiteSpace(request.Email))
             {
-                return BadRequest(new { message = "Email is required." });
+                return BadRequest(ApiResponse<object>.Fail("Email is required.", "VALIDATION_ERROR"));
             }
 
             var result = await _authManager.SendOtpAsync(request.Email);
 
-            if(result is long errorCode && errorCode < 0)
+            if(result is long errorCode && errorCode == -100)
             {
-                if(errorCode == -100)
-                {
-                    return NotFound(new { message = "User not found.", errorCode = errorCode });
-                }
+                return NotFound(ApiResponse<object>.Fail("User not found.", "USER_NOT_FOUND"));
             }
 
-            return Ok(new { message = "OTP code has been sent to the registered email address." });
+            return Ok(ApiResponse<object?>.Ok(null, "OTP code has been sent to the registered email address."));
 
         }
 
@@ -93,7 +103,7 @@ namespace IndoorLocalization.Controllers
         {
             if (string.IsNullOrWhiteSpace(request.Email) || string.IsNullOrWhiteSpace(request.Otp))
             {
-                return BadRequest(new { message = "Email and OTP code are required." });
+                return BadRequest(ApiResponse<object>.Fail("Email and OTP code are required.", "INCOMPLETE_DATA"));
             }
 
             var result = await _authManager.VerifyOtpAsync(request.Email, request.Otp);
@@ -103,20 +113,27 @@ namespace IndoorLocalization.Controllers
                 string errorMessage = errorCode switch
                 {
                     -1 => "Invalid email or OTP code.",
-                    -2 => "OTP code has already been used. Please request a new code.",
-                    -3 => "OTP code has expired. Please request a new code.",
-                    -4 => "Maximum attempts reached. Please request a new code.",
-                    _ => "An unexpected authentication error occurred."
+                    -2 => "OTP code has already been used. Please request a new one.",
+                    -3 => "OTP code has expired. Please request a new one.",
+                    -4 => "Maximum attempts reached. Please request a new one.",
+                    _ => "Authentication failed."
                 };
 
-                return Unauthorized(new { message = errorMessage, errorCode = errorCode });
+                return Unauthorized(ApiResponse<object>.Fail(errorMessage, "OTP_VERIFICATION_FAILED"));
             }
 
-            if (result == null || result is not LoginResponseDto)
+            if (result is not LoginResponseDto loginResult)
             {
-                return Unauthorized(new { message = "Authentication failed. Result type mismatch." });
+                return Unauthorized(ApiResponse<object>.Fail(
+                    "Authentication failed.",
+                    "OTP_VERIFICATION_FAILED"
+                ));
             }
-            return Ok(result);
+
+            return Ok(ApiResponse<LoginResponseDto>.Ok(
+                loginResult,
+                "OTP verified successfully."
+            ));
         }
     }
 }
