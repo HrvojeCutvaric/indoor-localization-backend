@@ -3,6 +3,7 @@ using IndoorLocalization.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using IndoorLocalization.Models.Responses;
 
 namespace IndoorLocalization.Controllers
 {
@@ -21,7 +22,7 @@ namespace IndoorLocalization.Controllers
         public async Task<IActionResult> GetAll()
         {
             var maps = await _floorMapService.GetAllAsync();
-            return Ok(maps);
+            return Ok(ApiResponse<object>.Ok(maps, "Floor maps retrieved successfully."));
         }
 
         [HttpGet("{id}")]
@@ -30,9 +31,9 @@ namespace IndoorLocalization.Controllers
         {
             var map = await _floorMapService.GetByIdAsync(id);
             if (map == null)
-                return NotFound(new { message = "Floor map not found" });
+                return NotFound(ApiResponse<object>.Fail("Floor map not found.", "NOT_FOUND"));
 
-            return Ok(map);
+            return Ok(ApiResponse<object>.Ok(map, "Floor map retrieved successfully."));
         }
 
         [HttpPost]
@@ -43,11 +44,11 @@ namespace IndoorLocalization.Controllers
             try
             {
                 var createdMap = await _floorMapService.CreateAsync(dto);
-                return Ok(createdMap);
+                return Ok(ApiResponse<object>.Ok(createdMap, "Floor map created successfully."));
             }
             catch (ArgumentException ex)
             {
-                return BadRequest(new { message = ex.Message });
+                return BadRequest(ApiResponse<object>.Fail(ex.Message, "VALIDATION_ERROR"));
             }
         }
 
@@ -60,13 +61,13 @@ namespace IndoorLocalization.Controllers
             {
                 var updatedMap = await _floorMapService.UpdateAsync(id, dto);
                 if (updatedMap == null)
-                    return NotFound(new { message = "Floor map not found" });
+                    return NotFound(ApiResponse<object>.Fail("Floor map not found.", "NOT_FOUND"));
 
-                return Ok(updatedMap);
+                return Ok(ApiResponse<object>.Ok(updatedMap, "Floor map updated successfully."));
             }
             catch (ArgumentException ex)
             {
-                return BadRequest(new { message = ex.Message });
+                return BadRequest(ApiResponse<object>.Fail(ex.Message, "VALIDATION_ERROR"));
             }
         }
 
@@ -77,9 +78,9 @@ namespace IndoorLocalization.Controllers
             var deleted = await _floorMapService.DeleteAsync(id);
 
             if (!deleted)
-                return NotFound(new { message = "Floor map not found" });
+                return NotFound(ApiResponse<object>.Fail("Floor map not found.", "NOT_FOUND"));
 
-            return Ok(new { message = "Floor map deleted successfully" });
+            return Ok(ApiResponse<object?>.Ok(null, "Floor map deleted successfully."));
         }
     }
 }
